@@ -3,7 +3,7 @@ const seatArea = document.getElementById("seatArea")
 let selectedSeats = []
 let isAnimating = false
 
-document.getElementById("generate").onclick = createSeats
+document.getElementById("generate").onclick = generateAndStart
 document.getElementById("randomize").onclick = randomizeSeats
 document.getElementById("reshuffle").onclick = randomizeSeats
 document.getElementById("saveImage").onclick = saveImage
@@ -262,3 +262,14 @@ link.click()
 })
 
 }
+
+function generateAndStart(){
+
+createSeats()
+
+setTimeout(()=>{
+randomizeSeats()
+},100)
+
+}
+
