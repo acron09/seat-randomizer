@@ -3,12 +3,10 @@ const seatArea = document.getElementById("seatArea")
 let selectedSeats = []
 let isAnimating = false
 
-
 document.getElementById("generate").onclick = createSeats
 document.getElementById("randomize").onclick = randomizeSeats
 document.getElementById("reshuffle").onclick = randomizeSeats
 document.getElementById("saveImage").onclick = saveImage
-
 
 
 function createSeats(){
@@ -31,6 +29,8 @@ function createSeats(){
         seatArea.appendChild(seat)
 
     }
+
+    selectedSeats=[]
 
 }
 
@@ -66,7 +66,7 @@ function seatSwap(seat){
 
     seat.classList.add("selected")
 
-    if(selectedSeats.length==2){
+    if(selectedSeats.length===2){
 
         const a=selectedSeats[0].innerText
         const b=selectedSeats[1].innerText
@@ -89,11 +89,60 @@ function randomizeSeats(){
 
     if(isAnimating) return
 
+    const seats=document.querySelectorAll(".seat")
+
+    if(seats.length===0){
+        alert("먼저 좌석을 생성하세요!")
+        return
+    }
+
     isAnimating=true
 
     startCountdown()
 
- })
+}
+
+
+
+function startCountdown(){
+
+    const cd=document.getElementById("countdown")
+
+    if(!cd){
+        animateShuffle(()=>{
+            finalSeatAssignment()
+            isAnimating=false
+        })
+        return
+    }
+
+    let count=5
+
+    cd.style.display="block"
+    cd.innerText=count
+
+    const timer=setInterval(()=>{
+
+        count--
+
+        if(count<=0){
+
+            clearInterval(timer)
+
+            cd.style.display="none"
+
+            animateShuffle(()=>{
+                finalSeatAssignment()
+                isAnimating=false
+            })
+
+        }else{
+
+            cd.innerText=count
+
+        }
+
+    },1000)
 
 }
 
@@ -146,9 +195,7 @@ function finalSeatAssignment(){
     const usableSeats=[...seats].filter(s=>!s.classList.contains("excluded"))
 
     if(numbers.length<usableSeats.length){
-
         alert("출석번호가 좌석보다 부족합니다!")
-
     }
 
     shuffle(numbers)
@@ -170,11 +217,7 @@ function finalSeatAssignment(){
 
     })
 
-
-
     shuffle(specialNumbers)
-
-
 
     specialSeats.forEach(seat=>{
 
@@ -190,11 +233,7 @@ function finalSeatAssignment(){
 
     })
 
-
-
     shuffle(numbers)
-
-
 
     seats.forEach(seat=>{
 
@@ -203,9 +242,7 @@ function finalSeatAssignment(){
         if(seat.innerText!="") return
 
         if(numbers.length>0){
-
             seat.innerText=numbers.pop()
-
         }
 
     })
@@ -245,38 +282,5 @@ function saveImage(){
         link.click()
 
     })
-function startCountdown(){
-
-    const cd=document.getElementById("countdown")
-
-    let count=5
-
-    cd.style.display="block"
-    cd.innerText=count
-
-    const timer=setInterval(()=>{
-
-        count--
-
-        if(count<=0){
-
-            clearInterval(timer)
-
-            cd.style.display="none"
-
-            animateShuffle(()=>{
-                finalSeatAssignment()
-                isAnimating=false
-            })
-
-        }else{
-
-            cd.innerText=count
-
-        }
-
-    },1000)
-
-}
 
 }
