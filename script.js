@@ -11,276 +11,254 @@ document.getElementById("saveImage").onclick = saveImage
 
 function createSeats(){
 
-    const rows = parseInt(document.getElementById("rows").value)
-    const cols = parseInt(document.getElementById("cols").value)
+const rows = parseInt(document.getElementById("rows").value)
+const cols = parseInt(document.getElementById("cols").value)
 
-    seatArea.innerHTML=""
+seatArea.innerHTML=""
 
-    seatArea.style.gridTemplateColumns=`repeat(${cols},70px)`
+seatArea.style.gridTemplateColumns=`repeat(${cols},70px)`
 
-    for(let i=0;i<rows*cols;i++){
+for(let i=0;i<rows*cols;i++){
 
-        const seat=document.createElement("div")
+const seat=document.createElement("div")
 
-        seat.classList.add("seat")
+seat.classList.add("seat")
 
-        seat.onclick=(e)=>seatClick(e,seat)
+seat.onclick=(e)=>seatClick(e,seat)
 
-        seatArea.appendChild(seat)
-
-    }
-
-    selectedSeats=[]
+seatArea.appendChild(seat)
 
 }
 
+selectedSeats=[]
+
+}
 
 
 function seatClick(e,seat){
 
-    if(e.shiftKey){
+if(e.shiftKey){
 
-        seat.classList.toggle("special")
-        seat.classList.remove("excluded")
-        return
-
-    }
-
-    if(seat.innerText!=""){
-
-        seatSwap(seat)
-        return
-
-    }
-
-    seat.classList.toggle("excluded")
-    seat.classList.remove("special")
+seat.classList.toggle("special")
+seat.classList.remove("excluded")
+return
 
 }
 
+if(seat.innerText!=""){
+
+seatSwap(seat)
+return
+
+}
+
+seat.classList.toggle("excluded")
+seat.classList.remove("special")
+
+}
 
 
 function seatSwap(seat){
 
-    selectedSeats.push(seat)
+selectedSeats.push(seat)
 
-    seat.classList.add("selected")
+seat.classList.add("selected")
 
-    if(selectedSeats.length===2){
+if(selectedSeats.length===2){
 
-        const a=selectedSeats[0].innerText
-        const b=selectedSeats[1].innerText
+const a=selectedSeats[0].innerText
+const b=selectedSeats[1].innerText
 
-        selectedSeats[0].innerText=b
-        selectedSeats[1].innerText=a
+selectedSeats[0].innerText=b
+selectedSeats[1].innerText=a
 
-        selectedSeats[0].classList.remove("selected")
-        selectedSeats[1].classList.remove("selected")
+selectedSeats[0].classList.remove("selected")
+selectedSeats[1].classList.remove("selected")
 
-        selectedSeats=[]
-
-    }
+selectedSeats=[]
 
 }
 
+}
 
 
 function randomizeSeats(){
 
-    if(isAnimating) return
+if(isAnimating) return
 
-    const seats=document.querySelectorAll(".seat")
+const seats=document.querySelectorAll(".seat")
 
-    if(seats.length===0){
-        alert("먼저 좌석을 생성하세요!")
-        return
-    }
-
-    isAnimating=true
-
-    startCountdown()
-
+if(seats.length===0){
+alert("먼저 좌석을 생성하세요!")
+return
 }
 
+isAnimating=true
+
+startCountdown()
+animateShuffle()
+
+}
 
 
 function startCountdown(){
 
-    const cd=document.getElementById("countdown")
+const cd=document.getElementById("countdown")
 
-    if(!cd){
-        animateShuffle(()=>{
-            finalSeatAssignment()
-            isAnimating=false
-        })
-        return
-    }
+let count=5
 
-    let count=5
+cd.style.display="block"
+cd.innerText=count
 
-    cd.style.display="block"
-    cd.innerText=count
+const timer=setInterval(()=>{
 
-    const timer=setInterval(()=>{
+count--
 
-        count--
+if(count<=0){
 
-        if(count<=0){
+clearInterval(timer)
 
-            clearInterval(timer)
+cd.style.display="none"
 
-            cd.style.display="none"
+}else{
 
-            animateShuffle(()=>{
-                finalSeatAssignment()
-                isAnimating=false
-            })
+cd.innerText=count
 
-        }else{
+}
 
-            cd.innerText=count
-
-        }
-
-    },1000)
+},1000)
 
 }
 
 
+function animateShuffle(){
 
-function animateShuffle(callback){
+const seats=document.querySelectorAll(".seat")
 
-    const seats=document.querySelectorAll(".seat")
+let duration=5000
+let start=Date.now()
 
-    let duration=10000
-    let start=Date.now()
+let interval=setInterval(()=>{
 
-    let interval=setInterval(()=>{
+seats.forEach(seat=>{
 
-        seats.forEach(seat=>{
+if(seat.classList.contains("excluded")) return
 
-            if(seat.classList.contains("excluded")) return
+seat.innerText=Math.floor(Math.random()*99)+1
 
-            seat.innerText=Math.floor(Math.random()*99)+1
+})
 
-        })
+if(Date.now()-start>duration){
 
-        if(Date.now()-start>duration){
+clearInterval(interval)
 
-            clearInterval(interval)
+finalSeatAssignment()
 
-            callback()
-
-        }
-
-    },80)
+isAnimating=false
 
 }
 
+},80)
+
+}
 
 
 function finalSeatAssignment(){
 
-    const start=parseInt(document.getElementById("startNum").value)
-    const end=parseInt(document.getElementById("endNum").value)
+const start=parseInt(document.getElementById("startNum").value)
+const end=parseInt(document.getElementById("endNum").value)
 
-    let numbers=[]
+let numbers=[]
 
-    for(let i=start;i<=end;i++){
-        numbers.push(i)
-    }
+for(let i=start;i<=end;i++){
+numbers.push(i)
+}
 
-    const seats=document.querySelectorAll(".seat")
+const seats=document.querySelectorAll(".seat")
 
-    const usableSeats=[...seats].filter(s=>!s.classList.contains("excluded"))
+const usableSeats=[...seats].filter(s=>!s.classList.contains("excluded"))
 
-    if(numbers.length<usableSeats.length){
-        alert("출석번호가 좌석보다 부족합니다!")
-    }
+shuffle(numbers)
 
-    shuffle(numbers)
+const specialNumbers=document.getElementById("specialNumbers").value
+.split(",")
+.map(n=>parseInt(n.trim()))
+.filter(n=>!isNaN(n))
 
-    const specialNumbers=document.getElementById("specialNumbers").value
-    .split(",")
-    .map(n=>parseInt(n.trim()))
-    .filter(n=>!isNaN(n))
+let specialSeats=[]
 
-    let specialSeats=[]
+seats.forEach(seat=>{
 
-    seats.forEach(seat=>{
+if(seat.classList.contains("special")){
+specialSeats.push(seat)
+}
 
-        if(seat.classList.contains("special")){
-            specialSeats.push(seat)
-        }
+seat.innerText=""
 
-        seat.innerText=""
+})
 
-    })
+shuffle(specialNumbers)
 
-    shuffle(specialNumbers)
+specialSeats.forEach(seat=>{
 
-    specialSeats.forEach(seat=>{
+if(specialNumbers.length>0){
 
-        if(specialNumbers.length>0){
+let num=specialNumbers.pop()
 
-            let num=specialNumbers.pop()
+seat.innerText=num
 
-            seat.innerText=num
-
-            numbers=numbers.filter(n=>n!==num)
-
-        }
-
-    })
-
-    shuffle(numbers)
-
-    seats.forEach(seat=>{
-
-        if(seat.classList.contains("excluded")) return
-
-        if(seat.innerText!="") return
-
-        if(numbers.length>0){
-            seat.innerText=numbers.pop()
-        }
-
-    })
+numbers=numbers.filter(n=>n!==num)
 
 }
 
+})
+
+shuffle(numbers)
+
+seats.forEach(seat=>{
+
+if(seat.classList.contains("excluded")) return
+
+if(seat.innerText!="") return
+
+if(numbers.length>0){
+seat.innerText=numbers.pop()
+}
+
+})
+
+}
 
 
 function shuffle(array){
 
-    for(let i=array.length-1;i>0;i--){
+for(let i=array.length-1;i>0;i--){
 
-        const j=Math.floor(Math.random()*(i+1))
+const j=Math.floor(Math.random()*(i+1))
 
-        const temp=array[i]
+const temp=array[i]
 
-        array[i]=array[j]
+array[i]=array[j]
 
-        array[j]=temp
+array[j]=temp
 
-    }
+}
 
 }
 
 
-
 function saveImage(){
 
-    html2canvas(document.body).then(canvas=>{
+html2canvas(document.body).then(canvas=>{
 
-        const link=document.createElement("a")
+const link=document.createElement("a")
 
-        link.download="seat.png"
+link.download="seat.png"
 
-        link.href=canvas.toDataURL()
+link.href=canvas.toDataURL()
 
-        link.click()
+link.click()
 
-    })
+})
 
 }
