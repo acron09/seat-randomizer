@@ -91,10 +91,9 @@ function randomizeSeats(){
 
     isAnimating=true
 
-    animateShuffle(()=>{
-        finalSeatAssignment()
-        isAnimating=false
-    })
+    startCountdown()
+
+ })
 
 }
 
@@ -246,5 +245,38 @@ function saveImage(){
         link.click()
 
     })
+function startCountdown(){
+
+    const cd=document.getElementById("countdown")
+
+    let count=5
+
+    cd.style.display="block"
+    cd.innerText=count
+
+    const timer=setInterval(()=>{
+
+        count--
+
+        if(count<=0){
+
+            clearInterval(timer)
+
+            cd.style.display="none"
+
+            animateShuffle(()=>{
+                finalSeatAssignment()
+                isAnimating=false
+            })
+
+        }else{
+
+            cd.innerText=count
+
+        }
+
+    },1000)
+
+}
 
 }
