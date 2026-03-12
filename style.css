@@ -71,7 +71,7 @@ font-weight:bold;
 margin-top:10px;
 font-size:14px;
 color:#444;
-
+}
 
 #countdown{
 position:fixed;
@@ -93,4 +93,5 @@ animation:pop 1s ease infinite;
 }
 
 }
+
 
