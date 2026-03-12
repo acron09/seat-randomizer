@@ -1,27 +1,20 @@
 body{
-
 font-family:sans-serif;
 text-align:center;
-
 }
 
 .controls{
-
 margin:20px;
-
 }
 
 #seatArea{
-
 display:grid;
 justify-content:center;
 gap:10px;
 margin-top:20px;
-
 }
 
 .seat{
-
 width:70px;
 height:70px;
 border:2px solid black;
@@ -32,39 +25,28 @@ font-size:20px;
 cursor:pointer;
 background:white;
 transition:0.3s;
-
 }
 
 .seat:hover{
-
 transform:scale(1.1);
-
 }
 
 .excluded{
-
 background:#888;
-
 }
 
 .special{
-
 background:gold;
-
 }
 
 .selected{
-
 border:4px solid red;
-
 }
 
 .teacher{
-
 margin-top:30px;
 font-size:22px;
 font-weight:bold;
-
 }
 
 .guide{
@@ -78,20 +60,17 @@ position:fixed;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-font-size:120px;
+font-size:180px;
 font-weight:bold;
-color:#ff4444;
+color:#ff3333;
 display:none;
 z-index:999;
-animation:pop 1s ease infinite;
+text-shadow:0 0 30px red;
+animation:bounce 1s infinite;
 }
 
-@keyframes pop{
+@keyframes bounce{
 0%{transform:translate(-50%,-50%) scale(0.5);}
-50%{transform:translate(-50%,-50%) scale(1.2);}
+50%{transform:translate(-50%,-50%) scale(1.4);}
 100%{transform:translate(-50%,-50%) scale(0.5);}
 }
-
-}
-
-
